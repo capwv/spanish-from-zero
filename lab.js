@@ -137,6 +137,11 @@ R.cards = function (t, host) {
   progress[t.id] = function () { return { done: !!s.finished, text: s.finished ? 'خلصت اللعبة بنتيجة ' + s.score + ' من ' + t.items.length + '.' : 'لسه ما خلصتش اللعبة.' }; };
 };
 
+/* ---------- choice (multiple choice, same engine as cards) ---------- */
+R.choice = function (t, host) {
+  R.cards(Object.assign({}, t, { items: t.items.map(function (i) { return { text: i.q, options: i.options, answer: i.answer, why: i.why, ltr: true }; }) }), host);
+};
+
 /* ---------- order (word-order builder) ---------- */
 R.order = function (t, host) {
   var s = T(t.id); s.solved = s.solved || [];
