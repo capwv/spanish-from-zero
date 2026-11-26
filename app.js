@@ -157,6 +157,16 @@
   }
 
   function refreshProgressUI() {
+    var staleNav = false;
+    document.querySelectorAll('.nav-item').forEach(function (n) {
+      var l = CURRICULUM.filter(function (x) { return x.id === n.dataset.id; })[0];
+      if (l && n.classList.contains('locked') !== lessonLocked(l)) staleNav = true;
+    });
+    if (staleNav) {
+      var activeId = currentLesson && currentLesson.id;
+      buildNav();
+      document.querySelectorAll('.nav-item').forEach(function (n) { n.classList.toggle('active', n.dataset.id === activeId); });
+    }
     var pct = totalLessons() ? Math.round(doneCount() / totalLessons() * 100) : 0;
     document.getElementById('progress-fill').style.width = pct + '%';
     document.getElementById('progress-text').textContent = pct + '%';
@@ -302,7 +312,7 @@
           }).join('') + '</div>';
       } else if (b.type === 'speak') {
         html += '<div class="spk-set"><p class="spk-tip">🗣️ اسمع الجملة، رددها بصوت عالي ورا النطق، وبعدين سجّل صوتك وقارن. التسجيل بيفضل على جهازك بس ومش بيتبعت لأي حد.</p>' +
-          b.items.map(function (it) {
+          (b.items || [b]).map(function (it) {
             return '<div class="spk-row" data-en="' + esc(it.en).replace(/"/g, '&quot;') + '">' +
               '<div class="spk-text"><span class="spk-en" dir="ltr">' + esc(it.en) + '</span>' + (it.ar ? '<span class="spk-ar">' + esc(it.ar) + '</span>' : '') + '</div>' +
               '<div class="spk-btns">' +
